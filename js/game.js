@@ -12,21 +12,21 @@ const Game = {
         h: undefined
     },
 
-    keys : {
-        SPACE: 32,
-        UP: 38,
-        DOWN: 40
-    },
+    player: undefined,   
 
-    player: undefined,    
+    background: undefined,
+
+    obstacles: [],
+    frameCounter: 0,
 
     init(id){
         this.canvasDom = document.getElementById(id)
         this.ctx = this.canvasDom.getContext('2d')
-        this.setDimensions()
+        this.setDimensions()   
         this.createSurvivor()
-        this.setEventListeners()        
-
+        this.createBackground()   
+        this.start()
+        
     },
 
      setDimensions() {
@@ -39,21 +39,43 @@ const Game = {
     createSurvivor() {
         this.player = new Survivor(this.ctx, this.canvasSize)
         
-        this.player.draw()          // Aquí estaría dibujando la imagen cargada (cuadro)
+    },
+    
+    
+    
+    start() {
+        setInterval(() => {
+            this.clearScreen()                  // Limpia la pantalla
+            this.background.draw()                                                
+            this.player.draw()
+            this.createObstacles()
+            this.obstacles.forEach(elm => elm.draw())
+            this.frameCounter++
+            this.clearObstacles()
+            console.log(this.obstacles)
+            
+        }, 50)},
+
+
+
+    clearScreen() {
+        this.ctx.clearRect(0, 0, this.canvasSize.w, this.canvasSize.h)      // Elimina del array bullets las balas que ya no están en pantalla
+    },
+    
+    createBackground(){
+
+        this.background = new Background(this.ctx, this.backgroundW, this.backgroundH)
     },
 
-    setEventListeners() {
-        document.onkeydown = e => {
-            e.keyCode === this.keys.SPACE ? this.shoot() : null
+    createObstacles(){
+        if (this.frameCounter % 350 === 0) {
+        this.obstacles.push(new Obstacle(this.ctx, this.canvasSize, this.obstaclePosX, this.obstaclePosY, this.obstacleSizeW, this.obstacleSizeH))}
+    },
 
-            e.keyCode === this.keys.UP ? this.player.move('up'): null //this.move('up') : null
-                
-            e.keyCode === this.keys.DOWN ? this.player.move('down') : null
-
-        }
-    }, 
+    clearObstacles() {
+        this.obstacles = this.obstacles.filter(elm => elm.obstaclePos.x + elm.obstacleSize.w >= 0)
+      },
     
     
-
-
+    
 }
