@@ -1,5 +1,5 @@
 class Survivor {
-        constructor(ctx, canvasSize){
+        constructor(ctx, canvasSize, survivorPosX, survivorPosY, survivorSizeW, survivorSizeH){
             this.ctx = ctx
             this.canvasSize = { w: window.innerWidth, h: window.innerHeight } // Tamaño del canvas
             this.survivorPos = { x: 100, y: 300 } // Posición inicial
@@ -29,7 +29,6 @@ class Survivor {
             this.bullets.forEach(bullet => bullet.draw())
             this.clearBullets()
 
-            console.log (this.bullets)
             this.move()
             this.ctx.drawImage(this.image, this.survivorPos.x, this.survivorPos.y, this.survivorSize.w, this.survivorSize.h)
 
@@ -60,7 +59,6 @@ class Survivor {
         shoot() {
             this.bullets.push(new Bullets(this.ctx, this.survivorPos.x, this.survivorPos.y, this.survivorSize.w, this.survivorSize.h))
 
-            
           }
 
         clearBullets() {

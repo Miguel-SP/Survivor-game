@@ -6,7 +6,7 @@ class Obstacle {
 
       this.obstacleSize = { w: 100, h: 180 }
  
-      this.obstaclePos = { x: 2000, y: Math.random()*((this.canvasSize.h - this.obstacleSize.h) - 0)}
+      this.obstaclePos = { x: this.canvasSize.w + 10, y: Math.random()*((this.canvasSize.h - this.obstacleSize.h) - 0)}
   
       this.obstacleVel = 2
 
