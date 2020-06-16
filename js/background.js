@@ -7,7 +7,7 @@ class Background {
       this.backgroundPos = { x: 0, y: 0}
       this.canvasSize = { w: window.innerWidth, h: window.innerHeight }
       this.image = new Image()
-      this.image.src = 'img/streetbg.jpg'
+      this.image.src = 'img/bgapocalypse.png'
       
   
       this.backgroundVelX = 2

@@ -4,12 +4,12 @@ class Bullets {
       this.ctx = ctx;
       this.bulletsPos = { x: survivorPosX + survivorSizeW,  y: survivorPosY + survivorSizeH / 2} 
 
-      this.bulletsSize = { w: 50 , h: 25 }
+      this.bulletsSize = { w: 70 , h: 50 }
   
   
       this.bulletsVel = 12
       this.image = new Image()
-      this.image.src = 'img/bullet.png'
+      this.image.src = 'img/bullet-in-air.png'
       
     }
   

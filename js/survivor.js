@@ -3,13 +3,21 @@ class Survivor {
             this.ctx = ctx
             this.canvasSize = { w: window.innerWidth, h: window.innerHeight } // Tamaño del canvas
             this.survivorPos = { x: 100, y: 300 } // Posición inicial
-            this.survivorSize = { w: 150, h: 200 } // Pendientes de modificar tamaño
+            this.survivorSize = { w: 200, h: 153 } // Pendientes de modificar tamaño
 
             this.image = new Image() 
-            this.image.src = 'img/survivor.png'     // pendientes del Sprite para cargarlo
-            
+            this.image.src = 'img/chuckandando.png'     // pendientes del Sprite para cargarlo
+           
+            this.spriteSrcX 
+            this.spriteSrcY
+            this.spriteW = 200
+            this.spriteH = 153
+            this.currentFrame = 0
+            this.spriteFrames = 3
 
-            this.vel = 50
+
+
+            this.vel = 30
 
             this.keys = {
                 SPACE: 32,
@@ -30,8 +38,11 @@ class Survivor {
             this.clearBullets()
 
             this.move()
-            this.ctx.drawImage(this.image, this.survivorPos.x, this.survivorPos.y, this.survivorSize.w, this.survivorSize.h)
 
+            this.updateFrame()
+
+            this.ctx.drawImage(this.image, this.spriteSrcX, this.spriteSrcY, this.spriteW, this.spriteH, this.survivorPos.x, this.survivorPos.y, this.survivorSize.w, this.survivorSize.h)
+            console.log(this.survivorPos.y)
         }
         
         
@@ -39,8 +50,8 @@ class Survivor {
 
             switch (dir){
                 case 'up': 
-                if (this.survivorPos.y <= 0){
-                    this.survivorPos.y == 0
+                if (this.survivorPos.y <= 250){
+                    this.survivorPos.y == 250
                 } else {
                 this.survivorPos.y -= this.vel          // Mueve el survivor hacia arriba y le pone límite
                 }
@@ -66,7 +77,6 @@ class Survivor {
           }
         
         
-        
         setEventListeners() {
             document.onkeydown = e => {
                 e.keyCode === this.keys.SPACE ? this.shoot() : null
@@ -77,6 +87,19 @@ class Survivor {
                 
     
             }
-        } 
+        }
+        
+        updateFrame(){
+
+           if (Game.frameCounter % 7 === 0){
+               this.currentFrame++
+           }
+           if (this.currentFrame > this.spriteFrames - 1){
+
+            this.currentFrame = 0
+           }
+           this.spriteSrcX = this.currentFrame * this.spriteW
+           this.spriteSrcY = 0
+        }
         
     }

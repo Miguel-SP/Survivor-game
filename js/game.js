@@ -20,6 +20,11 @@ const Game = {
     enemies: [],
     frameCounter: 0,
 
+    lives: 3,
+    image: new Image(),
+    
+   
+
     init(id){
         this.canvasDom = document.getElementById(id)
         this.ctx = this.canvasDom.getContext('2d')
@@ -54,12 +59,14 @@ const Game = {
             this.createEnemies2()
             this.drawAndClearEverything()
 
-            this.obstacleCollision() ? this.gameOver() : null
-            this.enemiesCollision() ? this.gameOver() : null
+            this.obstacleCollision()
+            this.enemiesCollision()
             this.bulletsCollision()
             this.bulletsObstCollision()
+            //this.levelUp()
 
             this.frameCounter++
+            
             
         }, 1000/60)},
 
@@ -106,24 +113,52 @@ const Game = {
     },
     
     obstacleCollision(){
-        return this.obstacles.some(elm => {
-            return (
-                this.player.survivorPos.x < elm.obstaclePos.x + elm.obstacleSize.w &&
-                this.player.survivorPos.x + this.player.survivorSize.w > elm.obstaclePos.x &&
-                this.player.survivorPos.y < elm.obstaclePos.y + elm.obstacleSize.h &&
-                this.player.survivorPos.y + this.player.survivorSize.h > elm.obstaclePos.y 
-            )
-          })
+
+       return this.obstacles.some(elm => {
+
+        if ( this.player.survivorPos.x + 60 < elm.obstaclePos.x + elm.obstacleSize.w &&
+            this.player.survivorPos.x + this.player.survivorSize.w - 50 > elm.obstaclePos.x &&
+            this.player.survivorPos.y < elm.obstaclePos.y + elm.obstacleSize.h - 30  &&
+            this.player.survivorPos.y + this.player.survivorSize.h > elm.obstaclePos.y &&
+            this.lives > 0)
+            {
+                let index = this.obstacles.indexOf(elm)
+                if(index > -1){
+                        this.obstacles.splice(index, 1)
+                }
+                this.lives--
+                alert(`${this.lives} lives left!`)
+                
+            }
+                else if(this.lives === 0){
+        
+                this.gameOver()
+                }
+        })
+        
     },
 
     enemiesCollision(){
         return this.enemies.some(elm => {
-            return (
+            if (
                 this.player.survivorPos.x < elm.enemyPos.x + elm.enemySize.w &&
-                this.player.survivorPos.x + this.player.survivorSize.w > elm.enemyPos.x &&
-                this.player.survivorPos.y < elm.enemyPos.y + elm.enemySize.h &&
-                this.player.survivorPos.y + this.player.survivorSize.h > elm.enemyPos.y 
-            )
+                this.player.survivorPos.x + this.player.survivorSize.w - 100 > elm.enemyPos.x &&
+                this.player.survivorPos.y < elm.enemyPos.y + elm.enemySize.h - 20 &&
+                this.player.survivorPos.y + this.player.survivorSize.h > elm.enemyPos.y &&
+                this.lives > 0)
+            {
+                let index = this.enemies.indexOf(elm)
+                if(index > -1){
+                        this.enemies.splice(index, 1)
+                }
+                this.lives--
+                alert(`${this.lives} lives left!`)
+                
+            }
+                else if(this.lives === 0){
+        
+                this.gameOver()
+                }
           })
     },
 
@@ -162,21 +197,32 @@ const Game = {
            bul.bulletsPos.x + bul.bulletsSize.w > obs.obstaclePos.x &&
            bul.bulletsPos.y < obs.obstaclePos.y + obs.obstacleSize.h &&
            bul.bulletsPos.y + bul.bulletsSize.h > obs.obstaclePos.y
-           )    {
-               
+           ){
                this.player.bullets.shift()
-           }
-               
+            }   
         })
-   })
-  
+        })
     },
+
+    // levelUp(){
+
+    //     if (this.frameCounter % 1000 === 0){
+
+    //         this.enemies.enemyVel++
+    //     }
+
+
+    // },
     
     
     gameOver() {
-        clearInterval(this.interval)
-      }
 
+        clearInterval(this.interval)
+        this.image.src = 'img/gameover.jpg'
+
+        this.image.onload = () => this.ctx.drawImage(this.image, 0, 0, this.canvasSize.w, this.canvasSize.h)
+        
+    }
 
 
 

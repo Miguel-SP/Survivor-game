@@ -6,13 +6,13 @@ class Obstacle {
 
       this.obstacleSize = { w: 100, h: 180 }
  
-      this.obstaclePos = { x: this.canvasSize.w + 10, y: Math.random()*((this.canvasSize.h - this.obstacleSize.h) - 0)}
+      this.obstaclePos = { x: this.canvasSize.w + 10, y: Math.random()*((this.canvasSize.h - this.obstacleSize.h) - (200)) + (200)}
   
       this.obstacleVel = 2
 
 
       this.image = new Image()
-      this.image.src = 'img/valla.jpg'
+      this.image.src = 'img/wood.png'
     }
   
     draw() {
