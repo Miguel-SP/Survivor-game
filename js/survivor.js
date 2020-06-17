@@ -1,35 +1,26 @@
 class Survivor {
-        constructor(ctx, canvasSize, survivorPosX, survivorPosY, survivorSizeW, survivorSizeH){
+        constructor(ctx, canvasSize){
             this.ctx = ctx
-            this.canvasSize = { w: window.innerWidth, h: window.innerHeight } // Tamaño del canvas
-            this.survivorPos = { x: 100, y: 300 } // Posición inicial
-            this.survivorSize = { w: 200, h: 153 } // Pendientes de modificar tamaño
-
+            this.canvasSize = canvasSize // Tamaño del canvas
             this.image = new Image() 
-            this.image.src = 'img/chuckandando.png'     // pendientes del Sprite para cargarlo
+            this.image.src = 'img/chuckandando.png'
+                
+            this.position = { x: 100, y: 300 } // Posición inicial
+            this.size = { w: 200, h: 153 } 
+            this.spriteSrc = {x: undefined, y: undefined} 
            
-            this.spriteSrcX 
-            this.spriteSrcY
-            this.spriteW = 200
-            this.spriteH = 153
             this.currentFrame = 0
             this.spriteFrames = 3
 
-
-
             this.vel = 30
 
-            this.keys = {
-                SPACE: 32,
-                UP: 38,
-                DOWN: 40
-            }
+            this.keys = { SPACE: 32, UP: 38, DOWN: 40 }
 
             this.bullets = []
-
+            this.sound = new Audio()
+            this.sound.src = 'sounds/gun-gunshot-new.mp3'
 
         }
-        
         
         draw(){                             //Recordar meter todas las funciones que necesiten ejecutarse.
             this.setEventListeners()
@@ -41,26 +32,25 @@ class Survivor {
 
             this.updateFrame()
 
-            this.ctx.drawImage(this.image, this.spriteSrcX, this.spriteSrcY, this.spriteW, this.spriteH, this.survivorPos.x, this.survivorPos.y, this.survivorSize.w, this.survivorSize.h)
-            console.log(this.survivorPos.y)
+            this.ctx.drawImage(this.image, this.spriteSrc.x, this.spriteSrc.y, this.size.w, this.size.h, this.position.x, this.position.y, this.size.w, this.size.h)
+      
         }
-        
         
         move(dir){
 
             switch (dir){
                 case 'up': 
-                if (this.survivorPos.y <= 250){
-                    this.survivorPos.y == 250
+                if (this.position.y <= 250){
+                    this.position.y == 250
                 } else {
-                this.survivorPos.y -= this.vel          // Mueve el survivor hacia arriba y le pone límite
+                this.position.y -= this.vel          // Mueve el survivor hacia arriba y le pone límite
                 }
                 break;
                 case 'down': 
-                if (this.survivorPos.y + this.survivorSize.h >= this.canvasSize.h){
-                    this.survivorPos.y == this.canvasSize.h - this.survivorSize.h
+                if (this.position.y + this.size.h >= this.canvasSize.h){
+                    this.position.y == this.canvasSize.h - this.size.h
                 }else{
-                    this.survivorPos.y += this.vel      // Mueve el survivor hacia abajo y le pone límite
+                    this.position.y += this.vel      // Mueve el survivor hacia abajo y le pone límite
                 }
                 break;
             }
@@ -68,12 +58,12 @@ class Survivor {
         }
 
         shoot() {
-            this.bullets.push(new Bullets(this.ctx, this.survivorPos.x, this.survivorPos.y, this.survivorSize.w, this.survivorSize.h))
-
+            this.bullets.push(new Bullets(this.ctx, this.position.x, this.position.y, this.size.w, this.size.h))
+            this.sound.play()
           }
 
         clearBullets() {
-            this.bullets = this.bullets.filter(elm => elm.bulletsPos.x <= this.canvasSize.w);
+            this.bullets = this.bullets.filter(elm => elm.position.x <= this.canvasSize.w);
           }
         
         
@@ -85,7 +75,6 @@ class Survivor {
                     
                 e.keyCode === this.keys.DOWN ? this.move('down') : null
                 
-    
             }
         }
         
@@ -98,8 +87,8 @@ class Survivor {
 
             this.currentFrame = 0
            }
-           this.spriteSrcX = this.currentFrame * this.spriteW
-           this.spriteSrcY = 0
+           this.spriteSrc.x = this.currentFrame * this.size.w
+           this.spriteSrc.y = 0
         }
         
     }

@@ -1,11 +1,9 @@
 class Background {
 
-    constructor(ctx, backgroundW, backgroundH) {
+    constructor(ctx, canvasSize) {
       this.ctx = ctx;
-      this.backgroundW = backgroundW
-      this.backgroundH = backgroundH
+      this.canvasSize = canvasSize
       this.backgroundPos = { x: 0, y: 0}
-      this.canvasSize = { w: window.innerWidth, h: window.innerHeight }
       this.image = new Image()
       this.image.src = 'img/bgapocalypse.png'
       

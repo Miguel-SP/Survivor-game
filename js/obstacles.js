@@ -1,31 +1,24 @@
  
 class Obstacle {
-    constructor(ctx, canvasSize, obstaclePosX, obstaclePosY, obstacleSizeW, obstacleSizeH) {
+    constructor(ctx, canvasSize) {
       this.ctx = ctx;
-      this.canvasSize = { w: window.innerWidth, h: window.innerHeight }
+      this.canvasSize = canvasSize
 
-      this.obstacleSize = { w: 100, h: 180 }
- 
-      this.obstaclePos = { x: this.canvasSize.w + 10, y: Math.random()*((this.canvasSize.h - this.obstacleSize.h) - (200)) + (200)}
+      this.size = { w: 100, h: 180 }
+      this.position = { x: this.canvasSize.w + 10, y: Math.random()*((this.canvasSize.h - this.size.h) - (200)) + (200)}
   
       this.obstacleVel = 2
-
 
       this.image = new Image()
       this.image.src = 'img/wood.png'
     }
   
     draw() {
-
-        this.ctx.drawImage(this.image, this.obstaclePos.x, this.obstaclePos.y, this.obstacleSize.w, this.obstacleSize.h)
-
-
-    //   this.ctx.fillStyle = "black"
-    //   this.ctx.fillRect(this.ObstaclePos.x, this.ObstaclePos.y, this.ObstacleSize.w, this.ObstacleSize.h)
-      this.move()
+        this.ctx.drawImage(this.image, this.position.x, this.position.y, this.size.w, this.size.h)
+        this.move()
     }
   
     move() {
-      this.obstaclePos.x -= this.obstacleVel
+      this.position.x -= this.obstacleVel
     }
   }

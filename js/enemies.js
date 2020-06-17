@@ -1,75 +1,70 @@
 class Enemy {
-    constructor(ctx, canvasSize, enemyPosX, enemyPosY, enemySizeW, enemySizeH) {
+    constructor(ctx, canvasSize, imgSource, enemyVel, enemySizeW, enemySizeH) {
       this.ctx = ctx;
-      this.canvasSize = { w: window.innerWidth, h: window.innerHeight }
-
-      this.enemySize = { w: 66, h: 150 }
- 
-      this.enemyPos = { x: this.canvasSize.w + 10, y: Math.random()*((this.canvasSize.h - this.enemySize.h) - 200) + (200)}
-  
-      this.enemyVel = 4
-
+      this.canvasSize = canvasSize
       this.image = new Image()
-      this.image.src = "img/zombie1.png"
-
-      this.spriteSrcX 
-      this.spriteSrcY
-      this.spriteW = 66
-      this.spriteH = 150
+      this.image.src = imgSource
+      this.enemyVelX = enemyVel
+      this.size = { w: enemySizeW, h: enemySizeH }
+      
       this.currentFrame = 0
       this.spriteFrames = 3
-
+      this.spriteSrc = {x: undefined, y: undefined}
+      this.position = { x: this.canvasSize.w + 10, y: Math.random()*((this.canvasSize.h - this.size.h) - 200) + 200}
       
     }
   
     draw() {
-
       this.updateFrame()
-
-          this.ctx.drawImage(this.image, this.spriteSrcX, this.spriteSrcY, this.spriteW, this.spriteH, this.enemyPos.x, this.enemyPos.y, this.enemySize.w, this.enemySize.h)
-
-          this.move()
+      
+      this.ctx.drawImage(this.image, this.spriteSrc.x, this.spriteSrc.y, this.size.w, this.size.h, this.position.x, this.position.y, this.size.w, this.size.h)
+      
+      this.move()
+      
     }
   
-    move() {
-      this.enemyPos.x -= this.enemyVel
-    }
-
     updateFrame(){
-
       if (Game.frameCounter % 12 === 0){
           this.currentFrame++
       }
       if (this.currentFrame > this.spriteFrames - 1){
 
-       this.currentFrame = 0
+          this.currentFrame = 0
       }
-      this.spriteSrcX = this.currentFrame * this.spriteW
-      this.spriteSrcY = 0
-   }
-
-  }
-
-  // levelUp(){150
-  //   if ( Game.frameCounter % 1000 === 0)
-  //   this.enemyVel 
-  // }
-
-
-  class Enemy2 extends Enemy {          
-
-    constructor(ctx, canvasSize, enemyPosX, enemyPosY, enemySizeW, enemySizeH, image){
-
-    super(ctx, canvasSize, enemyPosX, enemyPosY)
-
-    this.image = new Image()
-    this.image.src = "img/zombie2.png"
-    
-    this.enemyVel = 6
-    this.enemySize = { w: 167, h: 200 }
-
-    this.spriteW = 167
-    this.spriteH = 200
+      this.spriteSrc.x = this.currentFrame * this.size.w
+      this.spriteSrc.y = 0
     }
-    
+
   }
+  
+  class EnemyRight extends Enemy {
+    constructor(ctx, canvasSize, imgSource, enemyVel, enemySizeW, enemySizeH){
+  
+      super(ctx, canvasSize, imgSource, enemyVel, enemySizeW, enemySizeH)
+    }
+    move() {
+      this.position.x -= this.enemyVelX
+      
+    }
+
+  }
+
+class EnemyZigZag extends Enemy {
+  constructor(ctx, canvasSize, imgSource, enemyVel, enemySizeW, enemySizeH){
+
+    super(ctx, canvasSize, imgSource, enemyVel, enemySizeW, enemySizeH)
+
+    this.enemyVelY = 4
+  }
+  
+    move(){
+    this.position.y += this.enemyVelY
+    this.position.x -= this.enemyVelX
+      
+    this.position.y >= (this.canvasSize.h - this.size.h) ? this.enemyVelY *= -1 : null
+    this.position.y <= 200 ? this.enemyVelY *= -1 : null
+  
+  }
+
+}
+  
