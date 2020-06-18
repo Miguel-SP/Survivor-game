@@ -16,14 +16,16 @@ class Survivor {
             this.keys = { SPACE: 32, UP: 38, DOWN: 40 }
 
             this.bullets = []
+            this.munition = 5
             this.sound = new Audio()
             this.sound.src = 'sounds/gun-gunshot-new.mp3'    
+            this.rechargeSound = new Audio()
+            this.rechargeSound.src = 'sounds/gun_cocking.mp3'    
         }
         
         draw(){       
             this.setEventListeners()
             this.bullets.forEach(bullet => bullet.draw())
-            this.clearBullets()
             this.move()
             this.updateFrame()
             this.ctx.drawImage(this.image, this.spriteSrc.x, this.spriteSrc.y, this.size.w, this.size.h, this.position.x, this.position.y, this.size.w, this.size.h)
@@ -49,11 +51,20 @@ class Survivor {
         }
 
         shoot() {
-            this.bullets.push(new Bullets(this.ctx, this.position.x, this.position.y, this.size.w, this.size.h))
-            this.sound.play()
-            this.sound.volume = 0.05
-          }
 
+            if (this.munition === 0){
+                setTimeout(() => {
+                    this.rechargeSound.play()
+                    this.rechargeSound.volume = 0.05
+                    this.munition = 5
+                }, 1000)
+            } else if (this.munition > 0){
+                this.munition--
+                this.bullets.push(new Bullets(this.ctx, this.position.x, this.position.y, this.size.w, this.size.h))
+                this.sound.play()
+                this.sound.volume = 0.05
+            }
+    }
         clearBullets() {
             this.bullets = this.bullets.filter(elm => elm.position.x <= this.canvasSize.w);
           }

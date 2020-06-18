@@ -44,26 +44,6 @@ const Game = {
     createSurvivor() {
         this.player = new Survivor(this.ctx, this.canvasSize)
     },
-
-    healthBar(){
-        this.ctx.fillStyle = 'black'
-        this.ctx.fillRect(95, 72, 285, 35)
-        this.ctx.fillStyle = 'gray'
-        this.ctx.fillRect(100, 77, 275, 25)
-        if(this.lives >= 3){
-            this.ctx.fillStyle = 'green'
-            this.ctx.fillRect(100, 77, 275, 25)
-        }else if(this.lives === 2){
-            this.ctx.fillStyle = 'green'
-            this.ctx.fillRect(100, 77, 183, 25)
-        }else if(this.lives === 1){
-            this.ctx.fillStyle = 'red'
-            this.ctx.fillRect(100, 77, 92, 25)
-        }
-        this.ctx.font = '22px Staatliches sans-serif'
-        this.ctx.fillStyle = 'white'
-        this.ctx.fillText('HEALTH = ' + this.lives, 177, 97)  
-    },
     
     start() {
         this.soundtrack.play()
@@ -75,8 +55,8 @@ const Game = {
         this.drawAndClearEverything()
         this.groupCollisions()
         this.healthBar()
+        this.munitionBar()
         this.frameCounter++
-        console.log(this.obstacles)
             
         }, 1000/60)
     },
@@ -141,7 +121,6 @@ const Game = {
             this.lives > 0){
                 
                 let index = obstOrEnemy.indexOf(elm)
-                
                 if(index > -1){
                     obstOrEnemy.splice(index, 1)
                 }
@@ -215,6 +194,58 @@ const Game = {
         this.bulletsObstCollision()
     },
 
+    healthBar(){
+        this.ctx.fillStyle = 'black'
+        this.ctx.fillRect(95, 72, 285, 35)
+        this.ctx.fillStyle = 'gray'
+        this.ctx.fillRect(100, 77, 275, 25)
+        if(this.lives >= 3){
+            this.ctx.fillStyle = 'green'
+            this.ctx.fillRect(100, 77, 275, 25)
+        }else if(this.lives === 2){
+            this.ctx.fillStyle = 'green'
+            this.ctx.fillRect(100, 77, 183, 25)
+        }else if(this.lives === 1){
+            this.ctx.fillStyle = 'red'
+            this.ctx.fillRect(100, 77, 92, 25)
+        }
+        this.ctx.font = '22px Staatliches sans-serif'
+        this.ctx.fillStyle = 'white'
+        this.ctx.fillText('HEALTH = ' + this.lives, 177, 97)  
+    },
+
+    munitionBar(){
+        this.ctx.fillStyle = 'black'
+        this.ctx.fillRect(95, 122, 285, 35)
+        this.ctx.fillStyle = 'gray'
+        this.ctx.fillRect(100, 127, 275, 25)
+        this.ctx.font = '22px Staatliches sans-serif'
+        if(this.player.munition === 5){
+            this.ctx.fillStyle = 'yellow'
+            this.ctx.fillRect(100, 127, 275, 25)
+        }else if(this.player.munition === 4){
+            this.ctx.fillStyle = 'yellow'
+            this.ctx.fillRect(100, 127, 220, 25)
+        }else if(this.player.munition === 3){
+            this.ctx.fillStyle = 'yellow'
+            this.ctx.fillRect(100, 127, 165, 25)
+        }else if(this.player.munition === 2){
+            this.ctx.fillStyle = 'yellow'
+            this.ctx.fillRect(100, 127, 110, 25)
+        }else if(this.player.munition === 1){
+            this.ctx.fillStyle = 'red'
+            this.ctx.fillRect(100, 127, 55, 25)
+        }
+        if(this.player.munition >= 1){
+        this.ctx.fillStyle = 'black'
+        this.ctx.fillText('MUNITION = ' + this.player.munition, 170, 148)
+        }
+        else if(this.player.munition === 0){
+            this.ctx.fillStyle = 'darkred'
+            this.ctx.fillText('RECHARGE!', 170, 148)
+        }
+    },
+
     gameOver() {
         this.image.src = 'img/gameover.jpg'
         this.image.onload = () => this.ctx.drawImage(this.image, 0, 0, this.canvasSize.w, this.canvasSize.h)        
@@ -223,6 +254,5 @@ const Game = {
         this.gameoverMusic.play()
         this.gameoverMusic.volume = 0.3   
         clearInterval(this.interval)
-        
     }
 }
