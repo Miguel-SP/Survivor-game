@@ -19,14 +19,14 @@ const Game = {
 
     lives: 3,
     image: new Image(),
-    
+    soundtrack: new Audio('sounds/Main_Theme.mp3'),   
    
     init(id){
         this.canvasDom = document.getElementById(id)
         this.ctx = this.canvasDom.getContext('2d')
         this.setDimensions()   
         this.createSurvivor()
-        this.createBackground()   
+        this.createBackground()
         this.start()
     },
 
@@ -42,7 +42,10 @@ const Game = {
     },
     
     start() {
-
+        
+        this.soundtrack.volume = 0.05
+        this.soundtrack.play()
+        
         this.interval = setInterval(() => {
         this.clearScreen()                  // Limpia la pantalla
         this.createObstacles()
@@ -52,9 +55,8 @@ const Game = {
         this.obstaclesAndEnemiesCollision(this.enemies)
         this.bulletsCollision()
         this.bulletsObstCollision()
-
         this.frameCounter++
-            console.log(this.frameCounter)
+            
         }, 1000/60)
     },
 
@@ -101,41 +103,37 @@ const Game = {
     },
     
     obstaclesAndEnemiesCollision(obstOrEnemy){
-
        return obstOrEnemy.some(elm => {
 
-        if ( this.player.position.x + 60 < elm.position.x + elm.size.w &&
+        if (this.player.position.x + 60 < elm.position.x + elm.size.w &&
             this.player.position.x + this.player.size.w - 50 > elm.position.x &&
             this.player.position.y < elm.position.y + elm.size.h - 30  &&
             this.player.position.y + this.player.size.h > elm.position.y &&
-            this.lives > 0)
-            {
+            this.lives > 0){
                 let index = obstOrEnemy.indexOf(elm)
-                if(index > -1)
-                {
+
+                if(index > -1){
                     obstOrEnemy.splice(index, 1)
                 }
                 this.lives--
                 alert(`${this.lives} lives left!`)
-            }
-                else if(this.lives === 0){
-                this.gameOver()
-                }
+        }
+        else if(this.lives === 0){
+        this.gameOver()
+        }
         }) 
-
     },
 
     bulletsCollision(){
         return  this.enemies.forEach(enem => {
             
-                 this.player.bullets.forEach(bul => {
-
-           if(
-           bul.position.x < enem.position.x + enem.size.w &&
+        this.player.bullets.forEach(bul => {
+         
+        if(bul.position.x < enem.position.x + enem.size.w &&
            bul.position.x + bul.size.w > enem.position.x &&
            bul.position.y < enem.position.y + enem.size.h &&
-           bul.position.y + bul.size.h > enem.position.y
-           ){
+           bul.position.y + bul.size.h > enem.position.y){
+
                 let index = this.enemies.indexOf(enem);
                 (index > -1) ? this.enemies.splice(index, 1) : null
                 this.player.bullets.shift()
@@ -148,13 +146,11 @@ const Game = {
         return  this.obstacles.forEach(obs => {
             
         this.player.bullets.forEach(bul => {
-
-           if(
-           bul.position.x < obs.position.x + obs.size.w &&
+          
+        if(bul.position.x < obs.position.x + obs.size.w &&
            bul.position.x + bul.size.w > obs.position.x &&
            bul.position.y < obs.position.y + obs.size.h &&
-           bul.position.y + bul.size.h > obs.position.y
-           ){
+           bul.position.y + bul.size.h > obs.position.y){
                this.player.bullets.shift()
             }   
         })
@@ -162,10 +158,12 @@ const Game = {
     },
     
     gameOver() {
-        clearInterval(this.interval)
         this.image.src = 'img/gameover.jpg'
-
         this.image.onload = () => this.ctx.drawImage(this.image, 0, 0, this.canvasSize.w, this.canvasSize.h)        
+        this.player.sound.pause()
+        this.soundtrack.pause()   
+        setTimeout( ()=> {
+            clearInterval(this.interval)
+        }, 2000)
     }
-
 }
