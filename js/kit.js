@@ -1,15 +1,14 @@
- class Obstacle {
+class Kit {
     constructor(ctx, canvasSize) {
       this.ctx = ctx;
       this.canvasSize = canvasSize
 
-      this.size = { w: 100, h: 180 }
+      this.size = { w: 50, h: 50 }
       this.position = { x: this.canvasSize.w + 10, y: Math.random()*((this.canvasSize.h - this.size.h) - (200)) + (200)}
-  
-      this.obstacleVel = 2
+      this.Vel = 2
 
       this.image = new Image()
-      this.image.src = 'img/wood.png'
+      this.image.src = 'img/first_aid_kit.png'
     }
   
     draw() {
@@ -18,6 +17,6 @@
     }
   
     move() {
-      this.position.x -= this.obstacleVel
+      this.position.x -= this.Vel
     }
   }

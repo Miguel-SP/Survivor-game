@@ -16,12 +16,6 @@ class Background {
     }
 
     move() {
-
-        
-      if (this.backgroundPos.x <= -this.canvasSize.w) {
-        this.backgroundPos.x = 0;
-      } else {
-      this.backgroundPos.x -= this.backgroundVelX;
-      }
+        this.backgroundPos.x <= -this.canvasSize.w ? this.backgroundPos.x = 0 : this.backgroundPos.x -= this.backgroundVelX
     }
   }

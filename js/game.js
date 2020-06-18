@@ -1,4 +1,3 @@
-
 const Game = {
 
     title: 'Survivor game',
@@ -14,6 +13,7 @@ const Game = {
     
     obstacles: [],
     enemies: [],
+    kits: [],
 
     frameCounter: 0,
 
@@ -22,7 +22,8 @@ const Game = {
     soundtrack: new Audio('sounds/Main_Theme.mp3'),
     survivorDead: new Audio('sounds/survivor_kill.mp3'),
     zombieDead: new Audio('sounds/zombie_kill.mp3'),
-    gameoverMusic: new Audio('sounds/gameover_music.mp3'),   
+    gameoverMusic: new Audio('sounds/gameover_music.mp3'),
+    liveUpSound: new Audio('sounds/liveUp.mp3'),   
    
     init(id){
         this.canvasDom = document.getElementById(id)
@@ -43,22 +44,39 @@ const Game = {
     createSurvivor() {
         this.player = new Survivor(this.ctx, this.canvasSize)
     },
+
+    healthBar(){
+        this.ctx.fillStyle = 'black'
+        this.ctx.fillRect(95, 72, 285, 35)
+        this.ctx.fillStyle = 'gray'
+        this.ctx.fillRect(100, 77, 275, 25)
+        if(this.lives >= 3){
+            this.ctx.fillStyle = 'green'
+            this.ctx.fillRect(100, 77, 275, 25)
+        }else if(this.lives === 2){
+            this.ctx.fillStyle = 'green'
+            this.ctx.fillRect(100, 77, 183, 25)
+        }else if(this.lives === 1){
+            this.ctx.fillStyle = 'red'
+            this.ctx.fillRect(100, 77, 92, 25)
+        }
+        this.ctx.font = '22px Staatliches sans-serif'
+        this.ctx.fillStyle = 'white'
+        this.ctx.fillText('HEALTH = ' + this.lives, 177, 97)  
+    },
     
     start() {
-        
         this.soundtrack.play()
         this.soundtrack.volume = 0.05
-        
         this.interval = setInterval(() => {
         this.clearScreen()                  // Limpia la pantalla
-        this.createObstacles()
+        this.createObjects()                // Crea obstaculos y kits de salud
         this.createEnemies()
         this.drawAndClearEverything()
-        this.obstaclesAndEnemiesCollision(this.obstacles)
-        this.obstaclesAndEnemiesCollision(this.enemies)
-        this.bulletsCollision()
-        this.bulletsObstCollision()
+        this.groupCollisions()
+        this.healthBar()
         this.frameCounter++
+        console.log(this.obstacles)
             
         }, 1000/60)
     },
@@ -71,10 +89,12 @@ const Game = {
         this.background = new Background(this.ctx, this.canvasSize)
     },
 
-    createObstacles(){
+    createObjects(){
         if (this.frameCounter % 350 === 0) {
-        this.obstacles.push(new Obstacle(this.ctx, this.canvasSize))}
-    },
+        this.obstacles.push(new Obstacle(this.ctx, this.canvasSize))
+        } else if (this.frameCounter % 1001 === 0) {
+        this.kits.push(new Kit(this.ctx, this.canvasSize))}
+        },  
     
     createEnemies(){
         if (this.frameCounter % 201 === 0) {
@@ -96,13 +116,19 @@ const Game = {
         this.enemies = this.enemies.filter(elm => elm.position.x + elm.size.w >= 0)
     },
 
+    clearKits() {
+        this.kits = this.kits.filter(elm => elm.position.x + elm.size.w >= 0)
+    },
+
     drawAndClearEverything(){
+        this.clearObstacles()
+        this.clearEnemies()
+        this.clearKits()
         this.background.draw()                                                
         this.player.draw()
         this.obstacles.forEach(elm => elm.draw())
-        this.clearObstacles()
         this.enemies.forEach(elm => elm.draw())
-        this.clearEnemies()
+        this.kits.forEach(elm => elm.draw())
     },
     
     obstaclesAndEnemiesCollision(obstOrEnemy){
@@ -122,15 +148,30 @@ const Game = {
                 this.survivorDead.play()
                 this.survivorDead.volume = 0.05
                 this.lives--
-                alert(`${this.lives} lives left!`)
-        }
-        else if(this.lives === 0){
+
+        } else if(this.lives === 0){
             this.survivorDead.play()
             this.survivorDead.volume = 0.05
             this.gameOver()
         }
         }) 
     },
+
+    kitsCollision(){
+        return this.kits.some(elm => {
+ 
+         if (this.player.position.x + 60 < elm.position.x + elm.size.w &&
+             this.player.position.x + this.player.size.w - 50 > elm.position.x &&
+             this.player.position.y < elm.position.y + elm.size.h - 30  &&
+             this.player.position.y + this.player.size.h > elm.position.y)
+             {    
+                 this.kits.shift()
+                 this.liveUpSound.play()
+                 this.liveUpSound.volume = 0.2
+                 this.lives++
+         }
+         }) 
+     },
 
     bulletsCollision(){
         return  this.enemies.forEach(enem => {
@@ -157,16 +198,23 @@ const Game = {
             
         this.player.bullets.forEach(bul => {
           
-        if(bul.position.x < obs.position.x + obs.size.w &&
-           bul.position.x + bul.size.w > obs.position.x &&
-           bul.position.y < obs.position.y + obs.size.h &&
-           bul.position.y + bul.size.h > obs.position.y){
-               this.player.bullets.shift()
-            }   
+            (bul.position.x < obs.position.x + obs.size.w && 
+            bul.position.x + bul.size.w > obs.position.x && 
+            bul.position.y < obs.position.y + obs.size.h && 
+            bul.position.y + bul.size.h > obs.position.y) ?
+            this.player.bullets.shift() : null
         })
         })
     },
-    
+
+    groupCollisions(){
+        this.obstaclesAndEnemiesCollision(this.obstacles)
+        this.obstaclesAndEnemiesCollision(this.enemies)
+        this.kitsCollision()
+        this.bulletsCollision()
+        this.bulletsObstCollision()
+    },
+
     gameOver() {
         this.image.src = 'img/gameover.jpg'
         this.image.onload = () => this.ctx.drawImage(this.image, 0, 0, this.canvasSize.w, this.canvasSize.h)        
@@ -174,8 +222,7 @@ const Game = {
         this.soundtrack.pause()
         this.gameoverMusic.play()
         this.gameoverMusic.volume = 0.3   
-        setTimeout( ()=> {
-            clearInterval(this.interval)
-        }, 1000)
+        clearInterval(this.interval)
+        
     }
 }
