@@ -19,7 +19,10 @@ const Game = {
 
     lives: 3,
     image: new Image(),
-    soundtrack: new Audio('sounds/Main_Theme.mp3'),   
+    soundtrack: new Audio('sounds/Main_Theme.mp3'),
+    survivorDead: new Audio('sounds/survivor_kill.mp3'),
+    zombieDead: new Audio('sounds/zombie_kill.mp3'),
+    gameoverMusic: new Audio('sounds/gameover_music.mp3'),   
    
     init(id){
         this.canvasDom = document.getElementById(id)
@@ -43,8 +46,8 @@ const Game = {
     
     start() {
         
-        this.soundtrack.volume = 0.05
         this.soundtrack.play()
+        this.soundtrack.volume = 0.05
         
         this.interval = setInterval(() => {
         this.clearScreen()                  // Limpia la pantalla
@@ -110,16 +113,21 @@ const Game = {
             this.player.position.y < elm.position.y + elm.size.h - 30  &&
             this.player.position.y + this.player.size.h > elm.position.y &&
             this.lives > 0){
+                
                 let index = obstOrEnemy.indexOf(elm)
-
+                
                 if(index > -1){
                     obstOrEnemy.splice(index, 1)
                 }
+                this.survivorDead.play()
+                this.survivorDead.volume = 0.05
                 this.lives--
                 alert(`${this.lives} lives left!`)
         }
         else if(this.lives === 0){
-        this.gameOver()
+            this.survivorDead.play()
+            this.survivorDead.volume = 0.05
+            this.gameOver()
         }
         }) 
     },
@@ -137,6 +145,8 @@ const Game = {
                 let index = this.enemies.indexOf(enem);
                 (index > -1) ? this.enemies.splice(index, 1) : null
                 this.player.bullets.shift()
+                this.zombieDead.play()
+                this.zombieDead.volume = 0.2
             } 
         })
         })
@@ -161,9 +171,11 @@ const Game = {
         this.image.src = 'img/gameover.jpg'
         this.image.onload = () => this.ctx.drawImage(this.image, 0, 0, this.canvasSize.w, this.canvasSize.h)        
         this.player.sound.pause()
-        this.soundtrack.pause()   
+        this.soundtrack.pause()
+        this.gameoverMusic.play()
+        this.gameoverMusic.volume = 0.3   
         setTimeout( ()=> {
             clearInterval(this.interval)
-        }, 2000)
+        }, 1000)
     }
 }
