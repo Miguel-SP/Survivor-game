@@ -88,22 +88,14 @@ const Game = {
         }
     },
       
-    clearObstacles() {
+    clearAll() {
         this.obstacles = this.obstacles.filter(elm => elm.position.x + elm.size.w >= 0)
-    },
-    
-    clearEnemies() {
         this.enemies = this.enemies.filter(elm => elm.position.x + elm.size.w >= 0)
-    },
-
-    clearKits() {
         this.kits = this.kits.filter(elm => elm.position.x + elm.size.w >= 0)
     },
 
     drawAndClearEverything(){
-        this.clearObstacles()
-        this.clearEnemies()
-        this.clearKits()
+        this.clearAll()
         this.background.draw()                                                
         this.player.draw()
         this.obstacles.forEach(elm => elm.draw())
@@ -220,18 +212,9 @@ const Game = {
         this.ctx.fillStyle = 'gray'
         this.ctx.fillRect(100, 127, 275, 25)
         this.ctx.font = '22px Staatliches sans-serif'
-        if(this.player.munition === 5){
+        if(this.player.munition >= 2){
             this.ctx.fillStyle = 'yellow'
-            this.ctx.fillRect(100, 127, 275, 25)
-        }else if(this.player.munition === 4){
-            this.ctx.fillStyle = 'yellow'
-            this.ctx.fillRect(100, 127, 220, 25)
-        }else if(this.player.munition === 3){
-            this.ctx.fillStyle = 'yellow'
-            this.ctx.fillRect(100, 127, 165, 25)
-        }else if(this.player.munition === 2){
-            this.ctx.fillStyle = 'yellow'
-            this.ctx.fillRect(100, 127, 110, 25)
+            this.ctx.fillRect(100, 127, 275 - (55 *(5-this.player.munition)), 25)
         }else if(this.player.munition === 1){
             this.ctx.fillStyle = 'red'
             this.ctx.fillRect(100, 127, 55, 25)
