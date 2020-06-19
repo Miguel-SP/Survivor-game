@@ -31,6 +31,7 @@ const Game = {
         this.setDimensions()   
         this.createSurvivor()
         this.createBackground()
+        document.getElementById("myButton").classList.add('hidden')
         this.start()
     },
 

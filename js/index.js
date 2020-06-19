@@ -1,1 +1,5 @@
-window.onload = () => Game.init('mycanvas')
+window.onload = () =>{
+    document.getElementById("myButton").onclick = () => {
+        Game.init('mycanvas')
+    }
+} 
