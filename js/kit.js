@@ -4,7 +4,7 @@ class Kit {
       this.canvasSize = canvasSize
 
       this.size = { w: 50, h: 50 }
-      this.position = { x: this.canvasSize.w + 10, y: Math.random()*((this.canvasSize.h - this.size.h) - (200)) + (200)}
+      this.position = { x: this.canvasSize.w + 10, y: Math.random()*((this.canvasSize.h - this.size.h) - (250)) + (250)}
       this.Vel = 2
 
       this.image = new Image()

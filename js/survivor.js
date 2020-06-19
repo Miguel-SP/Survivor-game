@@ -13,7 +13,7 @@ class Survivor {
             this.currentFrame = 0
             this.spriteFrames = 3
 
-            this.keys = { SPACE: 32, UP: 38, DOWN: 40 }
+            this.keys = { SPACE: 32, UP: 38, DOWN: 40, LEFT: 37, RIGHT: 39 }
 
             this.bullets = []
             this.munition = 5
@@ -34,10 +34,16 @@ class Survivor {
         move(dir){
             switch (dir){
                 case 'up': 
-                this.position.y <= 250 ? this.position.y == 250 : this.position.y -= this.vel  // Move up
+                this.position.y <= 250 ? this.position.y == 250 : this.position.y -= this.vel 
                 break;
                 case 'down': 
                 this.position.y + this.size.h >= this.canvasSize.h ? this.position.y == this.canvasSize.h - this.size.h : this.position.y += this.vel                                                  // Move down
+                break;
+                case 'right': 
+                this.position.x + this.size.w == this.canvasSize.w ? this.canvasSize.w - this.size.w : this.position.x += this.vel 
+                break;
+                case 'left': 
+                this.position.x <= 100 ? this.position.x == 100 : this.position.x -= this.vel                                                  // Move down
                 break;
             }         
         }
@@ -46,7 +52,9 @@ class Survivor {
             document.onkeydown = e => {
                 e.keyCode === this.keys.SPACE ? this.shoot() : null
                 e.keyCode === this.keys.UP ? this.move('up'): null
-                e.keyCode === this.keys.DOWN ? this.move('down') : null    
+                e.keyCode === this.keys.DOWN ? this.move('down') : null
+                e.keyCode === this.keys.LEFT ? this.move('left') : null
+                e.keyCode === this.keys.RIGHT ? this.move('right') : null
             }
         }
 
